@@ -1,34 +1,60 @@
 package com.knoldus
 import org.scalatest.funsuite.AnyFunSuite
 class CrudOperationTest extends AnyFunSuite {
-  val listObject = new MyList()
 
+  val listObject = new MyList()
+  listObject.create(5)
+  listObject.create(8)
+
+  val sequenceObject = new MySequence()
+  sequenceObject.create(15)
+  sequenceObject.create(81)
+
+ // List test cases
   test("To create and insert elements in the List") {
-    val newObject = listObject.create(5).create(8).create(7).create(9)
-    assert(newObject.read() == List(9,7,8,5))
+    listObject.create(33)
+    assert(listObject.read() == List(33,8,5))
   }
   test("To update an element in the List which is present") {
-    val newObject = listObject.create(5).create(8).create(7).create(9)
-    val updateObject = newObject.update(7,20)
-    assert(updateObject.read() == List(9, 20, 8, 5))
+    listObject.update(5,20)
+    assert(listObject.read() == List(33,8,20))
   }
   test("To update element in the List which is not present") {
-    val newObject = listObject.create(5).create(8).create(7).create(9)
-    val updateObject = newObject.update(17, 20)
-    assert(updateObject.read() == List(9, 7, 8, 5))
+    assertThrows[IndexOutOfBoundsException] {
+      listObject.update(15, 20)
+    }
   }
   test("To delete an element from the List which is already present") {
-    val newObject = listObject.create(5).create(8).create(7).create(9)
-    val deleteObject = newObject.delete(8)
-    assert(deleteObject.read() == List(9, 7, 5))
+    listObject.delete(20)
+    assert(listObject.read() == List(33,8))
   }
   test("To delete an element from the List which is not present") {
-    val newObject = listObject.create(5).create(8).create(7).create(9)
-    val deleteObject = newObject.delete(90)
-    assert(deleteObject.read() == List(9,7,8,5))
+    assertThrows[NoSuchElementException] {
+      listObject.delete(12)
+    }
   }
-  test("To delete an element from the empty List") {
-    val deleteObject = listObject.delete(90)
-    assert(deleteObject.read() == List())
+// Sequence Test cases
+  test("To create and insert elements in the Sequence") {
+    sequenceObject.create(45)
+    assert(sequenceObject.read() == List(15,81,45))
   }
+  test("To update an element in the Sequence which is present") {
+    sequenceObject.update(15, 20)
+    assert(sequenceObject.read() == List(20,81,45))
+  }
+  test("To update element in the Sequence which is not present") {
+    assertThrows[IndexOutOfBoundsException] {
+      sequenceObject.update(5, 20)
+    }
+  }
+  test("To delete an element from the Sequence which is already present") {
+    sequenceObject.delete(20)
+    assert(sequenceObject.read() == List(81,45))
+  }
+  test("To delete an element from the Sequence which is not present") {
+    assertThrows[NoSuchElementException] {
+      sequenceObject.delete(12)
+    }
+  }
+
 }
